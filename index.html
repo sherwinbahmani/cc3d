@@ -1,0 +1,307 @@
+<!Doctype html>
+<html lang="en">
+    <head>
+        <title>CC3D: Layout-Conditioned Generation of Compositional 3D Scenes</title>
+
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta name="author" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="icon" type="image/png" href="data/bunny.png"/>
+
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script src="https://unpkg.com/@glidejs/glide"></script>
+        <style type="text/css">
+            .side-text {
+                width:60%;
+                display:inline-block;
+                vertical-align:top;
+            }
+            .side-image {
+                width: 38%;
+                display: inline-block;
+                vertical-align: top;
+            }
+            .controls {
+                margin-bottom: 10px;
+            }
+            .left-controls {
+                display: inline-block;
+                vertical-align: top;
+                width: 80%;
+            }
+            .right-controls {
+                display: inline-block;
+                vertical-align: top;
+                width: 19%;
+                text-align: right;
+            }
+            .render_window {
+                display: inline-block;
+                vertical-align: middle;
+                box-shadow: 1px 0px 5px black;
+                margin-right: 10px;
+                margin-bottom: 10px;
+                width: calc(33% - 10px);
+            }
+            .progress {
+                background: #666;
+                position: relative;
+                height: 5px;
+                margin-bottom: -5px;
+                display: none;
+            }
+            .glide__slide:hover {cursor: grab;}
+            .glide__slide:active {cursor: grabbing;}
+            .glide__slide img {width: 90%;}
+            .glide__bullets {
+                text-align: center;
+            }
+            .glide__bullet--active {
+                color: #aaa; 
+            }
+
+            @media (max-width: 400px) {
+                .render_window {
+                    display: block;
+                    width: 90%;
+                    margin: 10px auto;
+                }
+            }
+            @media (max-width: 700px) {
+                .side-image {
+                    display: block;
+                    width: 80%;
+                    margin: 10px auto;
+                }
+                .side-text {
+                    display: block;
+                    width: 100%;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="section">
+            <h1 class="project-title">
+                CC3D: Layout-Conditioned Generation of Compositional 3D Scenes
+            </h1>
+
+
+            <div class="authors">
+                <a href=https://sherwinbahmani.github.io/>
+                    Sherwin Bahmani<sup> *1</sup>
+                </a>
+                <a href=https://jjparkcv.github.io/>
+                    Jeong Joon Park<sup> *2</sup>
+                </a>
+                <a href=https://paschalidoud.github.io/>
+                    Despoina Paschalidou <sup> 2</sup>
+                </a>
+                <a href=http://yanxg.art/>
+                    Xingguang Yan <sup>1</sup>
+                </a>
+                <br>
+                <a href=https://stanford.edu/~gordonwz/>
+                    Gordon Wetzstein <sup>2</sup>
+                </a>
+                <a href=https://geometry.stanford.edu/member/guibas/>
+                    Leonidas Guibas <sup>2</sup>
+                </a>
+                <a href=https://taiya.github.io/>
+                    Andrea Tagliasacchi <sup>1,3,4</sup>
+                </a>
+                
+            </div>
+            
+            <div class="project-star">*equal contribution</div>
+            <div class="affiliations">
+                <span><sup>1</sup> Simon Fraser University </span>
+                <span><sup>2</sup> Stanford University </span>
+                <span><sup>3</sup> Google Research </span>
+                <span><sup>4</sup> University of Toronto </span>
+            </div> 
+
+            <div class="project-conference">
+                arXiv 2023
+            </div>
+
+            <div class="project-icons">
+                <a href="https://arxiv.org/">
+                    <i class="fa fa-file"></i> <br/>
+                    Paper
+                </a>
+                <a href="https://github.com/sherwinbahmani/cc-3d/">
+                    <i class="fa fa-github"></i> <br/>
+                    Code
+                </a>
+            </div>
+        
+            <div class="teaser-image">
+                <video autoplay loop controls muted style="width:calc(60% - 10px); float: none;">
+                    <source src="teaser.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="section-title">Abstract</div>
+                <div class="content">
+                    In this work, we introduce CC3D, a conditional generative model that synthesizes complex 3D scenes conditioned on 2D semantic scene layouts, trained using single-view images. Different from most existing 3D GANs that limit their applicability to aligned single objects, we focus on generating complex scenes with multiple objects, by modeling the compositional nature of 3D scenes. By devising a 2D layout-based approach for 3D synthesis and implementing a new 3D field representation with a stronger geometric inductive bias, we have created a 3D GAN that is both efficient and of high quality, while allowing for a more controllable generation process. Our evaluations on synthetic 3D-FRONT and real-world KITTI-360 datasets demonstrate that our model generates scenes of improved visual and geometric quality in comparison to previous works.
+                </div>
+        
+        <div class="section-title">Motivation</div>
+        <div class="content">
+            <img src="teaser.png" style="width:calc(60%); float: none;">
+            <p>
+            </p>
+        <div class="section-title">Method</div>
+        <div class="content">
+            <img src="method.png" style="width:calc(100%); float: none;">
+            <p>
+                Our method takes a floorplan projection of the semantic scene layout and a noise vector as inputs. We use a conditional StyleGAN2 backbone to generate a 2D feature field based on the given layout and reshape the channels into a 3D feature volume. This feature volume is queried using trilinear interpolation and subsequently decoded into color and density using a small MLP. We use a superresolution module to upsample volume rendered images to target resolution and use a standard StyleGAN2 discriminator. In order to ensure semantic consistency between the layout and the rendering, we sample equidistant coordinates from the feature volume and process the sampled features with a semantic segmentation decoder added to the discriminator. We train our model on a combination of an adversarial loss and cross entropy loss.
+            </p>
+
+
+            
+            <div class="section-title">Results on 3D-FRONT Bedrooms</div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/bedrooms/ours/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    Ours
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/bedrooms/ours/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                Ours (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/bedrooms/eg3d/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    EG3D
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/bedrooms/eg3d/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                EG3D (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/bedrooms/gsn/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    GSN
+                </div>
+                </div>
+        
+        <div class="section-title">Results on 3D-FRONT Living Rooms</div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/living/ours/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    Ours
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/living/ours/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                Ours (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/living/eg3d/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    EG3D
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/living/eg3d/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                EG3D (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/living/gsn/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    GSN
+                </div>
+                </div>
+        
+        <div class="section-title">Results on KITTI-360</div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/kitti/ours/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    Ours
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/kitti/ours/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                Ours (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/kitti/eg3d/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    EG3D
+                </div>
+                </div>
+
+            <div class="video-section">
+            <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                <source src="Videos/kitti/eg3d/depth/camera_traj.mp4" type="video/mp4">
+            </video>
+            <div class="video-caption" style="width:100%;">
+                EG3D (Depth)
+            </div>
+            </div>
+
+            <div class="video-section">
+                <video autoplay loop controls muted style="width:calc(100% - 10px); float: none;">
+                    <source src="Videos/kitti/gsn/image/camera_traj.mp4" type="video/mp4">
+                </video>
+                <div class="video-caption" style="width:100%;">
+                    GSN
+                </div>
+                </div>
+    </body>
+</html>
