@@ -22,10 +22,10 @@ pip install -r requirements.txt
 Please refer to https://github.com/NVlabs/stylegan2-ada-pytorch for additional software/hardware requirements.
 
 ## Dataset
-Datasets need to have two subdirectories, namely images and labels. In each there are given number of scenes with renderings in images and labels in the dedicated boxes.npz. boxes.npz stores the layout parameters and the camera parameters. We use [BlenderProc](https://github.com/DLR-RM/BlenderProc/tree/main/examples/datasets/front_3d_with_improved_mat) to render the 3D-FRONT dataset. You can download the raw datasets here and pre-process them to the required data structure:
+Datasets need to have two subdirectories, namely images and labels. In each there are given number of scenes with renderings in images and labels in the dedicated boxes.npz. boxes.npz stores the layout parameters and the camera parameters. We use [BlenderProc](https://github.com/DLR-RM/BlenderProc/tree/main/examples/datasets/front_3d_with_improved_mat) to render the 3D-FRONT dataset. We provide pre-processing repositories here:
 
-- 3D-FRONT (bedrooms and living rooms): https://tianchi.aliyun.com/dataset/65347 
-- KITTI: https://www.cvlibs.net/datasets/kitti-360
+- [3D-FRONT](https://github.com/sherwinbahmani/threed_front_rendering) 
+- [KITTI-360](https://github.com/QhelDIV/kitti360_renderer)
 
 <pre>
 dataset/ 
@@ -40,7 +40,7 @@ You can download the pre-trained checkpoints used in our paper:
 | :-------- | :--------: | :----------------------------------------------------------: |
 | 3D-FRONT Bedrooms      |    256     |  [Google Drive](https://drive.google.com/file/d/1s7cXYEwW9ij7id718QAR_2XmU_yLQN1W) |
 | 3D-FRONT Living Rooms    |    256     |  [Google Drive](https://drive.google.com/file/d/1eJgE47r5CcLkpk6lKZg1LQ03G9euPyDC) |
-| KITTI      |    256     |  [Google Drive](https://drive.google.com/file/d/1j6KmjuK0ussmM_Y3WxCxbZ0w0_XFWs9s) |
+| KITTI-360      |    256     |  [Google Drive](https://drive.google.com/file/d/1j6KmjuK0ussmM_Y3WxCxbZ0w0_XFWs9s) |
 
 ## Train a new model
 ```bash
